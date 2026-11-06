@@ -1,0 +1,5 @@
+tessdata_fast, https://github.com/tesseract-ocr/tessdata_fast at commit
+87416418657359cb625c412a48b6e1d6d41c29bd. The archive carries eng.traineddata
+(bin/_internal/assets/tessdata/); other languages are downloaded from the same commit
+when first needed, each checked against the sha256 in tesseract_addon/tessdata_pins.py.
+Apache License 2.0.

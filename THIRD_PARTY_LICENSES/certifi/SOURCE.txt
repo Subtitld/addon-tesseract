@@ -1,0 +1,3 @@
+certifi (https://github.com/certifi/python-certifi): Mozilla's CA bundle, cacert.pem,
+used by the language downloads on macOS. Mozilla Public License 2.0; its source is the
+file itself, bin/_internal/certifi/cacert.pem.

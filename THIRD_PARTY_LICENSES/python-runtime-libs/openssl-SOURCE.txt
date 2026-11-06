@@ -1,0 +1,3 @@
+OpenSSL 3, the TLS library of the CPython that froze the add-on (its ssl and hashlib
+modules, for the language downloads). OpenSSL 3 is under the Apache License 2.0
+(openssl-LICENSE.txt). Sources: https://www.openssl.org/source/

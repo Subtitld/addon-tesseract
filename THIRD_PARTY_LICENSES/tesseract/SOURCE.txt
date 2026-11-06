@@ -1,0 +1,4 @@
+Tesseract 5.5.4, https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.4.tar.gz
+(sha256 a8dbf8b8c8ee427ff6ad1d99116502feaf59440af1adb893caf60a6576826cf4), unmodified.
+Built by native/build.sh as bin/_internal/assets/libtesseract.{so,dll,dylib}, without the
+legacy engine, training tools, libarchive, libcurl or OpenMP. Apache License 2.0.

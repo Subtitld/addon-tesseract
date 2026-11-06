@@ -1,0 +1,5 @@
+On Linux and Windows, libtesseract links the GNU C++ library (libstdc++) and libgcc
+statically: gcc-toolset-13 (GCC 13) on AlmaLinux 8 for Linux, GCC 14 from Debian's
+MinGW-w64 for Windows. Both are GPL-3.0 with the GCC Runtime Library Exception 3.1
+(COPYING.RUNTIME), which allows distributing the result under any licence; the GPL
+text is COPYING3. Sources: https://gcc.gnu.org/

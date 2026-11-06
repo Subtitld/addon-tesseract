@@ -1,0 +1,26 @@
+{
+ "01-dvd-eng.pgm": {
+  "model": "eng",
+  "text": "I told you not to come back here.\nWhy didn't you listen?"
+ },
+ "02-dvd-eng.pgm": {
+  "model": "eng",
+  "text": "- Are you okay?\n- I'm fine, thanks."
+ },
+ "03-pgs-eng.pgm": {
+  "model": "eng",
+  "text": "Where were you last night?"
+ },
+ "04-small-eng.pgm": {
+  "model": "eng",
+  "text": "The meeting's at noon,\nroom 214."
+ },
+ "05-dvd-por.pgm": {
+  "model": "por",
+  "text": "Ação, coração e emoção\nnão faltam aqui."
+ },
+ "06-pgs-por.pgm": {
+  "model": "por",
+  "text": "É difícil explicar\no que aconteceu."
+ }
+}

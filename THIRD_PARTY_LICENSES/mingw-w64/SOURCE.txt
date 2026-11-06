@@ -1,0 +1,4 @@
+The Windows libtesseract.dll is built with MinGW-w64 (Debian's g++-mingw-w64-x86-64-posix)
+and links its runtime, including winpthreads, statically. COPYING.MinGW-w64-runtime.txt
+lists the licences of the runtime's parts; winpthreads is MIT-style (winpthreads-COPYING);
+the rest is ZPL 2.1 or public domain (COPYING). Sources: https://www.mingw-w64.org/

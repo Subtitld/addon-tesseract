@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subtitld-addon-tesseract"
+version = "26.11.1"
+description = "Subtitld add-on: read picture subtitles (VobSub, PGS) as text with Tesseract 5.5"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Subtitld", email = "jbopen@gmail.com" }]
+requires-python = ">=3.10"
+
+# Tesseract is called through its C API (tesseract_addon/engine.py); the library
+# is built by native/build.sh and staged by tools/stage_assets.py. certifi is the
+# CA bundle for the language downloads on macOS (tesseract_addon/tessdata.py).
+dependencies = ["certifi"]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6.10"]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+tesseract-addon = "tesseract_addon.__main__:main"
+
+[tool.setuptools]
+packages = ["tesseract_addon"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
