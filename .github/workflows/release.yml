@@ -23,6 +23,10 @@ on:
 permissions:
   contents: write
 
+# manifest.json is UTF-8; Windows Python would read it as cp1252.
+env:
+  PYTHONUTF8: '1'
+
 jobs:
   native-linux:
     name: libtesseract (Linux)
