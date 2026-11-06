@@ -33,14 +33,14 @@ jobs:
     runs-on: ubuntu-22.04
     container: almalinux:8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Toolchain
         run: dnf -y -q install gcc-toolset-13-gcc-c++ cmake make binutils curl tar gzip
       - name: Build
         run: |
           source /opt/rh/gcc-toolset-13/enable
           bash native/build.sh linux build/native/linux
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: native-linux
           path: build/native/linux/
@@ -51,12 +51,12 @@ jobs:
     runs-on: ubuntu-22.04
     container: debian:trixie
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Toolchain
         run: apt-get update -qq && apt-get install -y -qq g++-mingw-w64-x86-64-posix cmake make curl ca-certificates
       - name: Build
         run: bash native/build.sh windows build/native/windows
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: native-windows
           path: build/native/windows/
@@ -66,13 +66,13 @@ jobs:
     name: libtesseract (macOS)
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build
         env:
           MACOSX_DEPLOYMENT_TARGET: '11.0'
           MACOS_ARCH: arm64
         run: bash native/build.sh macos build/native/macos
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: native-macos
           path: build/native/macos/
@@ -83,11 +83,11 @@ jobs:
     needs: native-linux
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: native-linux
           path: build/native/linux
@@ -140,13 +140,13 @@ jobs:
             exe_suffix: '.exe'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.11'
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: native-${{ matrix.native }}
           path: build/native/${{ matrix.native }}
@@ -166,6 +166,17 @@ jobs:
       - name: Build bundle
         shell: bash
         run: pyinstaller pyinstaller.spec --noconfirm
+
+      # setup-python's Linux build ships libpython and its extension modules
+      # with debug info (about 8 MB of the zip); symbols stay, only that goes.
+      - name: Strip debug info (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          du -sh dist/tesseract-addon
+          find dist/tesseract-addon/_internal -name '*.so*' -type f -exec strip --strip-debug {} +
+          du -sh dist/tesseract-addon
 
       # Fails the build when a native file in the bundle has no notice.
       - name: Assemble third-party licences
@@ -312,7 +323,7 @@ jobs:
           python -c "import hashlib,os;p=os.environ['ARCHIVE_NAME'];print(hashlib.sha256(open(p,'rb').read()).hexdigest())" > "${ARCHIVE_NAME}.sha256"
           cat "${ARCHIVE_NAME}.sha256"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.platform_label }}
           path: |
@@ -326,8 +337,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v7
         with:
           path: artefacts
       - name: Flatten
@@ -365,7 +376,7 @@ jobs:
             exit 1
           fi
           cat release-notes.md
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           files: release-files/*
           fail_on_unmatched_files: true
