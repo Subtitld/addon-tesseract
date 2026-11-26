@@ -25,6 +25,14 @@ pyinstaller pyinstaller.spec --noconfirm
 
 The Python side uses the standard library only (plus certifi's CA bundle for downloads on macOS): `tesseract_addon/engine.py` calls Tesseract's C API through ctypes, `images.py` cuts each picture into lines, `cleanup.py` fixes the usual slips (`|` read for `I`, ASCII punctuation in Chinese and Japanese). The release workflow builds and tests every platform's archive the way Subtitld installs it.
 
+Haiku has no PyInstaller, so there the add-on runs on HaikuPorts' Python 3.14. The library is built on Haiku, against the system's libstdc++ (Haiku has no static one, and every install has the shared one), so the Haiku archive is built on a Haiku machine and added to the release by hand:
+
+```bash
+native/build.sh haiku build/native/haiku
+python3.14 tools/stage_assets.py
+python3.14 tools/build_haiku.py
+```
+
 ## Licence
 
 Apache-2.0. Tesseract and tessdata_fast are Apache-2.0, Leptonica is BSD-2-Clause-style; every archive carries `THIRD_PARTY_LICENSES/` with the notices of everything in it.

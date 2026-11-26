@@ -4,7 +4,7 @@
 # Copyright 2026 Subtitld contributors
 # SPDX-License-Identifier: Apache-2.0
 #
-#     native/build.sh linux|windows|macos OUT_DIR
+#     native/build.sh linux|windows|macos|haiku OUT_DIR
 #
 # The add-on hands Tesseract raw grayscale pixels (TessBaseAPISetImage), so
 # Leptonica is built without any image codec: no zlib, libpng, libjpeg,
@@ -19,13 +19,15 @@
 #   windows - cross-compiled with MinGW-w64 by native/docker-build.sh;
 #             libstdc++, libgcc and winpthreads are linked in.
 #   macos   - on a Mac (CI), against libc++ from the system.
+#   haiku   - on Haiku (the build VM), against the system's libroot and
+#             libstdc++ (gcc_syslibs, on every Haiku).
 #
 # Output: OUT_DIR/libtesseract.{so,dll,dylib} and OUT_DIR/BUILD-INFO.txt.
 
 set -euo pipefail
 
-TARGET=${1:?usage: build.sh linux|windows|macos OUT_DIR}
-OUT=$(mkdir -p "${2:?usage: build.sh linux|windows|macos OUT_DIR}" && cd "$2" && pwd)
+TARGET=${1:?usage: build.sh linux|windows|macos|haiku OUT_DIR}
+OUT=$(mkdir -p "${2:?usage: build.sh linux|windows|macos|haiku OUT_DIR}" && cd "$2" && pwd)
 HERE=$(cd "$(dirname "$0")" && pwd)
 # shellcheck source=versions.env
 source "$HERE/versions.env"
@@ -77,6 +79,12 @@ case "$TARGET" in
         SHARED_LDFLAGS="-static -static-libstdc++ -static-libgcc -L$WORK/winlibs"
         LIBRARY=libtesseract.dll
         ;;
+    haiku)
+        # No static libstdc++ on Haiku; the shared one is part of every
+        # install (gcc_syslibs), so only Leptonica is linked in.
+        SHARED_LDFLAGS='-Wl,--exclude-libs,ALL'
+        LIBRARY=libtesseract.so
+        ;;
     macos)
         export MACOSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-11.0}
         COMMON+=(-DCMAKE_OSX_ARCHITECTURES="${MACOS_ARCH:-arm64}" -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
@@ -114,7 +122,7 @@ built=$(find "$WORK/build-tesseract" -maxdepth 2 \( -name 'libtesseract*.so*' -o
 [ -n "$built" ] || { echo "no library built" >&2; exit 1; }
 cp "$built" "$OUT/$LIBRARY"
 case "$TARGET" in
-    linux)   strip --strip-unneeded "$OUT/$LIBRARY" ;;
+    linux|haiku) strip --strip-unneeded "$OUT/$LIBRARY" ;;
     windows) x86_64-w64-mingw32-strip --strip-unneeded "$OUT/$LIBRARY" ;;
     macos)   install_name_tool -id "@rpath/$LIBRARY" "$OUT/$LIBRARY"
              strip -x "$OUT/$LIBRARY" ;;
@@ -125,7 +133,7 @@ esac
     echo "target: $TARGET"
     echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     case "$TARGET" in
-        linux)   echo "compiler: $(g++ --version | head -n 1)"; echo "needs:"; objdump -p "$OUT/$LIBRARY" | grep NEEDED ;;
+        linux|haiku) echo "compiler: $(g++ --version | head -n 1)"; echo "needs:"; objdump -p "$OUT/$LIBRARY" | grep NEEDED ;;
         windows) echo "compiler: $(x86_64-w64-mingw32-g++-posix --version | head -n 1)"; echo "needs:"
                  x86_64-w64-mingw32-objdump -p "$OUT/$LIBRARY" | grep 'DLL Name' ;;
         macos)   echo "compiler: $(c++ --version | head -n 1)"; echo "needs:"; otool -L "$OUT/$LIBRARY" ;;

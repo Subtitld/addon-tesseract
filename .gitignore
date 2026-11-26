@@ -14,3 +14,4 @@ report.xml
 frozen-report.xml
 *.log
 build-*.log
+release-staging-haiku/
