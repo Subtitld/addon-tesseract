@@ -35,7 +35,8 @@ def test_identity():
     assert MANIFEST['manifest_version'] == 1
     assert MANIFEST['executable'] == 'bin/tesseract-addon'
     assert "name='tesseract-addon'" in SPEC
-    assert MANIFEST['platforms'] == ['linux', 'macos', 'windows']
+    assert MANIFEST['platforms'] == ['linux', 'macos', 'windows', 'haiku']
+    assert MANIFEST['haiku_packages'] == ['python3.14', 'certifi_python3.14']
     assert MANIFEST['compute'] == 'cpu'
 
 

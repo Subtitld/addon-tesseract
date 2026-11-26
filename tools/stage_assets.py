@@ -28,7 +28,8 @@ ASSETS = REPO_ROOT / 'build' / 'assets'
 
 
 def default_native() -> Path:
-    target = 'macos' if sys.platform == 'darwin' else 'windows' if sys.platform == 'win32' else 'linux'
+    target = ('macos' if sys.platform == 'darwin' else 'windows' if sys.platform == 'win32'
+              else 'haiku' if sys.platform.startswith('haiku') else 'linux')
     return REPO_ROOT / 'build' / 'native' / target
 
 
