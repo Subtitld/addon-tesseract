@@ -1,7 +1,7 @@
 {
   "manifest_version": 1,
   "id": "tesseract",
-  "version": "26.11.1",
+  "version": "26.11.2",
   "display_name": "Tesseract OCR",
   "summary": "Reads picture subtitles (DVD VobSub, Blu-ray PGS) as text with Tesseract 5.5, so Subtitld can open them. Offline, CPU only. English is included; any of 100 other languages downloads once, when first needed (1-12 MB).",
   "author": "Subtitld",
